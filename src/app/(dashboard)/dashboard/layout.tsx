@@ -2,6 +2,9 @@
 
 import { AppShell, Burger, Text, useMantineColorScheme, useMantineTheme } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import useAuthStore from '@/app/store/authStore';
 import { AdminHeader } from '@/components/Headers/AdminHeader';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { navLinks } from '@/config';
@@ -11,11 +14,19 @@ interface Props {
 }
 
 export default function DashboardLayout({ children }: Props) {
+	const router = useRouter();
 	const [opened, { toggle }] = useDisclosure();
 	const { colorScheme } = useMantineColorScheme();
 	const theme = useMantineTheme();
 
 	const bg = colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0];
+
+	useEffect(() => {
+		const storedValue = localStorage.getItem('token');
+		if (!storedValue) {
+			router.push('/login');
+		}
+	}, [router]);
 
 	return (
 		<AppShell
